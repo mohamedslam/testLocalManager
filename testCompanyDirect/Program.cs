@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic; 
+using testCompanyDirect.Enum;
 
 namespace testCompanyDirect
 {
-   static class Program
+    static class Program
     {
       static   IResourceData resourceData;
       static  ILocalizationManager localizationManager;
@@ -14,26 +14,52 @@ namespace testCompanyDirect
         }
         static void Main(string[] args)
         {
-            var localResource = localizationManager.ReadlocalResource("En")
-                                                                   .ToArray();
+             EnumCultureID enumCultureID = EnumCultureID.En;
             while (true)
             {
                 try
                 {
-                   
-                    Console.WriteLine("Insert new  Key: ");
-                    var Rkey = Console.ReadLine();
-                    Console.WriteLine("Insert new Value: ");
-                    var Rvalue = Console.ReadLine();
+                    Console.WriteLine("Press G to G to find String or N to add New ");
+                    var keyPress = Console.ReadKey().Key;
+                    if (keyPress == ConsoleKey.G)
+                    {
+                        Console.WriteLine("insert and string to find: ");
 
-                    resourceData.Func2(ref localResource, int.Parse(Rkey), Rvalue);
+                       var rst= localizationManager.GetString(Console.ReadLine(), EnumCultureID.All);
+                        foreach (var elem in rst)
+                            Console.WriteLine(elem);
+                    }
+                    else if (keyPress == ConsoleKey.N)
+                    {
+                        Console.WriteLine("Insert new  Key: ");
+                        var Rkey = Console.ReadLine();
+                        Console.WriteLine("Insert new Value: ");
+                        var Rvalue = Console.ReadLine();
+                        Console.WriteLine("Insert new Calture (En or Ru): ");
+                        var Rclu = Console.ReadLine();
 
-                    foreach (var row in localResource)
-                        Console.WriteLine(row);
+                        //need to refactory
+                      
 
-                    Console.WriteLine("press A if you want add new any key to break");
+                        if (Rclu == "Ru")
+                            enumCultureID = EnumCultureID.Ru;
+                        else if (Rclu == "Ru")
+                            enumCultureID = EnumCultureID.En;
 
-                    if (Console.ReadKey().Key != ConsoleKey.A)
+                        var localResource = localizationManager.ReadlocalResource(enumCultureID)
+                                                                          .ToArray();
+
+                        resourceData.Func2(ref localResource, int.Parse(Rkey), Rvalue);
+
+                        localizationManager.RegisterSource(localResource, enumCultureID);
+
+
+                        foreach (var row in localResource)
+                            Console.WriteLine(row);
+                    }
+                    Console.WriteLine("press Any if you want to Main or B key to break");
+
+                    if (Console.ReadKey().Key != ConsoleKey.B)
                     {
                         break;
                     }
@@ -45,8 +71,5 @@ namespace testCompanyDirect
                 
             }
         }
-
-       
-
     }
 }

@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using testCompanyDirect.Enum;
 
 namespace testCompanyDirect
 {
@@ -11,13 +12,22 @@ namespace testCompanyDirect
     {
         char separator = ';';
         string file = @"localRsourceTest.csv";
-        public bool RegisterSource(int key, string value,string cultureInfoID)
+        public bool RegisterSource(KeyValuePair<int, string>[] a, EnumCultureID cultureInfoID)
         {                    
+            StringBuilder output = new StringBuilder();
             try
             {
-                StringBuilder output = new StringBuilder();
-                string newLine = string.Format("{0}, {1}, {2}", key, value, cultureInfoID);
-                output.AppendLine(string.Join(separator.ToString(), newLine));  
+                String[] headings = { "Key", "Value", "CultureID" };
+                output.AppendLine(string.Join(separator.ToString(), headings));
+               var allDataResource= ReadlocalResource( EnumCultureID.All);
+
+                 
+                foreach (var newResource in a)
+                {
+                    string newLine = string.Format("{0}, {1}, {2}", newResource.Key, newResource.Value, cultureInfoID);
+                    output.AppendLine(string.Join(separator.ToString(), newLine));
+                }              
+                
                 File.AppendAllText(file, output.ToString());
             }
             catch (Exception)
@@ -26,7 +36,7 @@ namespace testCompanyDirect
             }
             return true;            
         }
-       public List<KeyValuePair<int, string>> ReadlocalResource(string cultureInfoID) 
+       public List<KeyValuePair<int, string>> ReadlocalResource(EnumCultureID cultureInfoID) 
         {
            List< KeyValuePair<int, string>>  resourceValues=new List<KeyValuePair<int, string>>();
             using (var reader = new StreamReader(file))
@@ -35,23 +45,28 @@ namespace testCompanyDirect
                 {
                     var line = reader.ReadLine();
                     var values = line.Split(separator);
- 
-                    if (values[2] == cultureInfoID)
-                    {
+
+                    if (cultureInfoID == EnumCultureID.All)
                         resourceValues.Add(new KeyValuePair<int, string>
-                            (int.Parse(values[0]), values[1]));
-                    }
- 
+                                   (int.Parse(values[0]), values[1]));
+                    else if (values[2] == cultureInfoID.ToString())
+                        resourceValues.Add(new KeyValuePair<int, string>
+                            (int.Parse(values[0]), values[1]));            
                 }
                 return resourceValues;
             }
         }
 
-        public void GetString(ref KeyValuePair<int, string>[] stringID,string  cultureInfoID)
-        { 
-          CultureInfo  cultureInfo = String.IsNullOrEmpty(cultureInfoID)
-                        ? CultureInfo.InvariantCulture // Or use other default
-                        : new CultureInfo(cultureInfoID);
+        public List<KeyValuePair<int, string>> GetString(string stringID, EnumCultureID cultureInfoID)
+        {
+            var allDataResource = ReadlocalResource(cultureInfoID);
+            List<KeyValuePair<int, string>> resourceValues = new List<KeyValuePair<int, string>>();
+            foreach (var element in allDataResource)
+            {
+                if (stringID == element.Value)
+                    resourceValues.Add(element);
+            }
+            return allDataResource;
         }
     }
 }

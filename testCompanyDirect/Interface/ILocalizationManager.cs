@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using testCompanyDirect.Enum;
 
 namespace testCompanyDirect
 {
-      interface ILocalizationManager
+    interface ILocalizationManager
     {
-        bool RegisterSource(int key, string value, string cultureInfoID);
-        void GetString(ref KeyValuePair<int, string>[] stringID, string cultureInfoID);
-        List<KeyValuePair<int, string>> ReadlocalResource(string cultureInfoID);
+        bool RegisterSource( KeyValuePair<int, string>[] a, EnumCultureID cultureInfoID);
+        List<KeyValuePair<int, string>> GetString(string  stringID, EnumCultureID cultureInfoID);
+        List<KeyValuePair<int, string>> ReadlocalResource(EnumCultureID cultureInfoID);
     }
 }

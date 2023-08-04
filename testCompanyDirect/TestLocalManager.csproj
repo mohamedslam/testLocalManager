@@ -43,9 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enum\EnumCultureID.cs" />
     <Compile Include="Interface\ILocalizationManager.cs" />
     <Compile Include="Interface\IResourceData.cs" />
     <Compile Include="Class\LocalizationManager.cs" />
+    <Compile Include="Model\ResourceDataModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Class\ResourceData.cs" />
